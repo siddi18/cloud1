@@ -64,7 +64,7 @@ function getSecretHash(username, clientId, clientSecret) {
 }
 
 // Example Usage:
-const username = "siddhi18";  // The Cognito username (usually email)
+const username = "siddhi18@gmail.com";  // The Cognito username (usually email)
 const clientId = "240burhsimmfp2f13dhmhf9g5o";   // Your Cognito App Client ID
 const clientSecret = "1pdlshsghkme61fn2bo1f1v66bmntdoj3cj3a9b0vanfjrd3ct8r"; // Your Cognito App Client Secret
 
