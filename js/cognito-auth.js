@@ -49,30 +49,37 @@ var WildRydes = window.WildRydes || {};
         }
     });
 
-    function getSecretHash(username, clientId, clientSecret) {
-        var hash = CryptoJS.HmacSHA256(username + clientId, clientSecret);
-        return CryptoJS.enc.Base64.stringify(hash);
-    }
+  function getSecretHash(username) {
+    var message = username + _config.cognito.userPoolClientId;
+    var key = CryptoJS.HmacSHA256(message, _config.cognito.client_secret);
+    return CryptoJS.enc.Base64.stringify(key);
+}
 
-    function register(email, password, onSuccess, onFailure) {
-        var dataEmail = {
-            Name: 'email',
-            Value: email
-        };
-        var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        var secretHash = getSecretHash(email, poolData.ClientId, poolData.client_secret);
-        
-        userPool.signUp(toUsername(email), password, [attributeEmail], { SecretHash: secretHash },
-            function signUpCallback(err, result) {
-                if (!err) {
-                    onSuccess(result);
-                } else {
-                    onFailure(err);
-                }
+ function register(email, password, onSuccess, onFailure) {
+    var dataEmail = {
+        Name: 'email',
+        Value: email
+    };
+    var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+
+    var secretHash = getSecretHash(email); // Ensure this function returns a valid secret hash
+
+    userPool.signUp(
+        toUsername(email), 
+        password, 
+        [attributeEmail], 
+        [{ Name: 'SECRET_HASH', Value: secretHash }], // Ensure ValidationData is an array
+        function signUpCallback(err, result) {
+            if (!err) {
+                onSuccess(result);
+            } else {
+                onFailure(err);
             }
-        );
-    }
+        }
+    );
+}
+
 
     function signin(email, password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
