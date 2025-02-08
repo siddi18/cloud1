@@ -57,6 +57,7 @@ function getSecretHash(username) {
 
 
 
+
 function register(email, password, onSuccess, onFailure) {
     var dataEmail = {
         Name: 'email',
@@ -64,23 +65,25 @@ function register(email, password, onSuccess, onFailure) {
     };
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-    var secretHash = getSecretHash(email); // Generate SECRET_HASH
+    var secretHash = getSecretHash(email); // ✅ Generate SECRET_HASH
 
     userPool.signUp(
-        toUsername(email), 
-        password, 
+        toUsername(email),
+        password,
         [attributeEmail], 
-        null, // ✅ Fix: Pass 'null' instead of an object here
-        { SECRET_HASH: secretHash }, // ✅ Fix: Pass SECRET_HASH as clientMetadata
+        null, // ✅ Ensure ValidationData is 'null' or an empty array []
+        { SECRET_HASH: secretHash }, // ✅ Pass SECRET_HASH in clientMetadata
         function signUpCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
+                console.error("Signup Error: ", err); // ✅ Debug exact error
                 onFailure(err);
             }
         }
     );
 }
+
 
 
 
