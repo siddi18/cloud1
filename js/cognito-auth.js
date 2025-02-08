@@ -56,28 +56,30 @@ var WildRydes = window.WildRydes || {};
 }
 
 
- function register(email, password, onSuccess, onFailure) {
+function register(email, password, onSuccess, onFailure) {
     var dataEmail = {
         Name: 'email',
         Value: email
     };
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-    var secretHash = getSecretHash(email); // Ensure this function returns a valid secret hash
+    var secretHash = getSecretHash(email); // Generate secret hash
 
     userPool.signUp(
         toUsername(email), 
         password, 
         [attributeEmail], 
-        [{ Name: 'SECRET_HASH', Value: secretHash }], // Ensure ValidationData is an array
+        null, // Fix: Do NOT pass SECRET_HASH here
         function signUpCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
-                onFailure("hi");
+                onFailure(err); // Fix: Show actual error instead of "hi"
             }
         }
     );
+}
+
 }
 
 
