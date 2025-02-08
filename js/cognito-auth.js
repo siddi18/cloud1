@@ -49,11 +49,12 @@ var WildRydes = window.WildRydes || {};
         }
     });
 
-  function getSecretHash(username) {
+function getSecretHash(username) {
     var message = username + _config.cognito.userPoolClientId;
     var key = CryptoJS.HmacSHA256(message, _config.cognito.client_secret);
     return CryptoJS.enc.Base64.stringify(key);
 }
+
 
 
 function register(email, password, onSuccess, onFailure) {
@@ -63,22 +64,23 @@ function register(email, password, onSuccess, onFailure) {
     };
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-    var secretHash = getSecretHash(email); // Generate secret hash
+    var secretHash = getSecretHash(email); // Generate SECRET_HASH
 
     userPool.signUp(
-        toUsername(email), 
-        password, 
-        [attributeEmail], 
-        null, // Fix: Do NOT pass SECRET_HASH here
+        toUsername(email),
+        password,
+        [attributeEmail],
+        { SECRET_HASH: secretHash }, // ✅ Pass SECRET_HASH here
         function signUpCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
-                onFailure(err); // Fix: Show actual error instead of "hi"
+                onFailure(err);
             }
         }
     );
 }
+
 
 
 
