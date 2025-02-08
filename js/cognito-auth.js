@@ -80,7 +80,7 @@ function register(email, password, onSuccess, onFailure) {
     );
 }
 
-}
+
 
 
     function signin(email, password, onSuccess, onFailure) {
