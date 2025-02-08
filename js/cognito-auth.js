@@ -67,10 +67,11 @@ function register(email, password, onSuccess, onFailure) {
     var secretHash = getSecretHash(email); // Generate SECRET_HASH
 
     userPool.signUp(
-        toUsername(email),
-        password,
-        [attributeEmail],
-        { SECRET_HASH: secretHash }, // ✅ Pass SECRET_HASH here
+        toUsername(email), 
+        password, 
+        [attributeEmail], 
+        null, // ✅ Fix: Pass 'null' instead of an object here
+        { SECRET_HASH: secretHash }, // ✅ Fix: Pass SECRET_HASH as clientMetadata
         function signUpCallback(err, result) {
             if (!err) {
                 onSuccess(result);
@@ -82,6 +83,8 @@ function register(email, password, onSuccess, onFailure) {
 }
 
 
+
+console.log(userPool.signUp.toString());
 
 
 
