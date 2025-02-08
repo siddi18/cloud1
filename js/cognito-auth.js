@@ -74,7 +74,7 @@ var WildRydes = window.WildRydes || {};
             if (!err) {
                 onSuccess(result);
             } else {
-                onFailure(err);
+                onFailure("hi");
             }
         }
     );
