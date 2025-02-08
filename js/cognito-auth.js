@@ -51,12 +51,24 @@ var WildRydes = window.WildRydes || {};
 
     console.log("congigg",_config.cognito);
     
-function getSecretHash(username) {
-    var message = username + _config.cognito.userPoolClientId;
-    var key = CryptoJS.HmacSHA256(message, _config.cognito.client_secret);
-    return CryptoJS.enc.Base64.stringify(key);
+// function getSecretHash(username) {
+//     var message = username + _config.cognito.userPoolClientId;
+//     var key = CryptoJS.HmacSHA256(message, _config.cognito.client_secret);
+//     return CryptoJS.enc.Base64.stringify(key);
+// }
+
+function getSecretHash(username, clientId, clientSecret) {
+    const message = username + clientId; // Username + Client ID
+    const key = CryptoJS.HmacSHA256(message, clientSecret); // HMAC-SHA256 hash
+    return CryptoJS.enc.Base64.stringify(key); // Base64 encode the hash
 }
 
+// Example Usage:
+const username = "siddhi18";  // The Cognito username (usually email)
+const clientId = "240burhsimmfp2f13dhmhf9g5o";   // Your Cognito App Client ID
+const clientSecret = "1pdlshsghkme61fn2bo1f1v66bmntdoj3cj3a9b0vanfjrd3ct8r"; // Your Cognito App Client Secret
+
+console.log("Secret Hash:", getSecretHash(username, clientId, clientSecret));
 
 
 
@@ -67,8 +79,8 @@ function register(email, password, onSuccess, onFailure) {
     };
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-    var secretHash = getSecretHash(email); // ✅ Generate SECRET_HASH
-   console.log("secret hash:", secretHash);
+    var secretHash = getSecretHash(username, clientId, clientSecret); // ✅ Generate SECRET_HASH
+  // console.log("secret hash:", secretHash);
     userPool.signUp(
         toUsername(email),
         password,
