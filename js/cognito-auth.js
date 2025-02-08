@@ -49,6 +49,8 @@ var WildRydes = window.WildRydes || {};
         }
     });
 
+    console.log("congigg",_config.cognito);
+    
 function getSecretHash(username) {
     var message = username + _config.cognito.userPoolClientId;
     var key = CryptoJS.HmacSHA256(message, _config.cognito.client_secret);
@@ -66,7 +68,7 @@ function register(email, password, onSuccess, onFailure) {
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
     var secretHash = getSecretHash(email); // ✅ Generate SECRET_HASH
-
+   console.log("secret hash:", secretHash);
     userPool.signUp(
         toUsername(email),
         password,
